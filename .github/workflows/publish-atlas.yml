@@ -1,0 +1,52 @@
+name: Publish Finance Atlas
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "scripts/**"
+      - "config/**"
+      - ".github/workflows/publish-atlas.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout public tracker only
+        uses: actions/checkout@v4
+      - name: Synchronize approved status fields from private repo
+        env:
+          FINANCE_READ_TOKEN: ${{ secrets.FINANCE_READ_TOKEN }}
+        run: python3 scripts/sync_finance_progress.py
+      - name: Validate static public output
+        run: |
+          python3 -m json.tool site/progress.json >/dev/null
+          test -s site/index.html
+          if grep -Eiq '(github_pat_|ghp_[[:alnum:]]{20}|BEGIN PRIVATE KEY)' site/index.html site/progress.json; then
+            echo 'Potential secret in output' >&2
+            exit 1
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
