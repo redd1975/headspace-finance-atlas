@@ -30,9 +30,29 @@ jobs:
       - name: Checkout public tracker only
         uses: actions/checkout@v4
       - name: Synchronize approved status fields from private repo
+        id: sync
+        continue-on-error: true
         env:
           FINANCE_READ_TOKEN: ${{ secrets.FINANCE_READ_TOKEN }}
         run: python3 scripts/sync_finance_progress.py
+      - name: Mark snapshot as stale if private sync fails
+        if: steps.sync.outcome != 'success'
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('site/progress.json')
+          data = json.loads(path.read_text())
+          data['connected'] = False
+          data['verified_at'] = None
+          data['note'] = 'GitHub sync unavailable. Feature catalog is published, but progress statuses are not verified. Check the publishing workflow and FINANCE_READ_TOKEN.'
+          for item in data.get('packages', []):
+              item['ci'] = 'unknown'
+              item['review'] = 'unknown'
+              item['deployment'] = 'unknown'
+              item['pr_state'] = 'unknown'
+          path.write_text(json.dumps(data, indent=2) + '\n')
+          PY
       - name: Validate static public output
         run: |
           python3 -m json.tool site/progress.json >/dev/null
