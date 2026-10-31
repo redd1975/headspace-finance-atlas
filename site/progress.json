@@ -1,12 +1,12 @@
 {
   "connected": false,
   "verified_at": null,
-  "note": "Read-only GitHub connection is not yet active. Statuses are conservative and must not be used as merge or deployment evidence.",
+  "note": "Fallback snapshot only. Private GitHub synchronization must succeed before statuses are considered current.",
   "assignments": [
     {
       "agent": "Agent 1",
-      "work": "FIN05",
-      "note": "Accounting foundation; PR not yet verified"
+      "work": "FIN05 — PR #99",
+      "note": "Implementation complete; CI passed; independent review pending; unmerged"
     },
     {
       "agent": "Agent 2",
@@ -22,7 +22,20 @@
       "pr_number": null,
       "status": "completed",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Audit existing financial code, PRs, branch ownership and production/release state; establish safe implementation boundaries.",
+      "features": [
+        "Repository architecture and PR audit",
+        "File ownership and conflict map",
+        "Known finance integrity risks documented"
+      ],
+      "done_features": [
+        "Completed: baseline repository audit and handoff"
+      ],
+      "next_hint": "FIN01, FIN02, FIN05",
+      "pr_count": 0
     },
     {
       "id": "FIN01",
@@ -31,7 +44,21 @@
       "pr_number": 98,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Synthetic, offline finance regression foundation using fictional companies, branches and banking statement layouts.",
+      "features": [
+        "UnionBank-format CSV/XLSX fixtures and exact-centavo oracles",
+        "Import, replay, balance and restore/regression cases",
+        "Browser acceptance on mobile and desktop"
+      ],
+      "done_features": [
+        "Implemented in PR #98: 67 focused tests passing; 5 TODO; 22 browser checks passing; 2 not run (agent report)",
+        "PR remains unmerged pending owner review"
+      ],
+      "next_hint": "FIN03, FIN14",
+      "pr_count": 0
     },
     {
       "id": "FIN02",
@@ -40,7 +67,22 @@
       "pr_number": 78,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Expense Ledger ownership, bills and source-link integrity with safe persistence and restore.",
+      "features": [
+        "Separate economic owner from paying-account owner",
+        "Prevent Bills Pay → Undo → Pay duplicate expenses",
+        "Preserve ownership fields through backup, restore and sync",
+        "Verify schema and historic compatibility"
+      ],
+      "done_features": [
+        "Draft implementation in PR #78: explicit ownership, Ledger filters and source-aware views",
+        "Critical duplicate-expense and restore/sync issues not yet independently cleared"
+      ],
+      "next_hint": "FIN07, FIN08, FIN03R",
+      "pr_count": 0
     },
     {
       "id": "FIN03",
@@ -49,7 +91,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Independent bank-import and provenance acceptance for real-world statement structures using synthetic records.",
+      "features": [
+        "Account-specific import profiles and repeat detection",
+        "Opening balance + movements = closing reconciliation",
+        "Preserve source evidence on ambiguous/overlapping records"
+      ],
+      "done_features": [],
+      "next_hint": "FIN06",
+      "pr_count": 0
     },
     {
       "id": "FIN04",
@@ -58,16 +111,42 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Isolated security and Face ID review before adopting related changes.",
+      "features": [
+        "Review biometric/passphrase fallback and session boundaries",
+        "Verify encrypted vault and offline recovery",
+        "Separate simulator checks from real-device acceptance"
+      ],
+      "done_features": [],
+      "next_hint": "FIN15",
+      "pr_count": 0
     },
     {
       "id": "FIN05",
       "title": "Read-only accounting foundation",
       "owner": "Agent 1",
-      "pr_number": null,
-      "status": "assigned",
+      "pr_number": 99,
+      "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Pure read-only derived accounting projection: multi-entity contracts, posting rules and trial balance.",
+      "features": [
+        "Typed 22-account chart and entity registry",
+        "Exact centavo postings with balanced entries",
+        "Deterministic replay, reversals and source traceability",
+        "Independent journal validation and no-write guarantees"
+      ],
+      "done_features": [
+        "PR #99: 16 new files; 51 accounting tests passing; full suite 829 tests, two CI checks passing (agent report and GitHub checks)",
+        "Not wired into the app; not merged; independent review pending"
+      ],
+      "next_hint": "FIN04I, FIN09",
+      "pr_count": 0
     },
     {
       "id": "FIN06",
@@ -76,7 +155,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Reconciliation hardening for matching, statement continuity and restore safety.",
+      "features": [
+        "Detect unmatched or overlapping statement periods",
+        "Preserve matching and unmatching through backup/restore",
+        "Block incorrect reconciled statuses when balances do not agree"
+      ],
+      "done_features": [],
+      "next_hint": "FIN07, FIN08",
+      "pr_count": 0
     },
     {
       "id": "FIN07",
@@ -85,7 +175,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Correct card, transfer and owner-funded transactions without double-counting.",
+      "features": [
+        "Separate account transfer from cross-owner funding",
+        "Match reimbursements to bank evidence",
+        "Credit-card repayments clear liability, not duplicate expenses"
+      ],
+      "done_features": [],
+      "next_hint": "FIN09",
+      "pr_count": 0
     },
     {
       "id": "FIN08",
@@ -94,7 +195,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Supplier payables and settlement controls.",
+      "features": [
+        "One payable across partial payments",
+        "Cheque, reversal and delayed-settlement handling",
+        "Duplicate-source protection with supplier/bank evidence"
+      ],
+      "done_features": [],
+      "next_hint": "FIN09",
+      "pr_count": 0
     },
     {
       "id": "FIN09",
@@ -103,7 +215,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Integrated source-linked general journal and safe accounting posting.",
+      "features": [
+        "Journal entries balance per entity",
+        "Idempotent posting and immutable source references",
+        "Corrections via traceable reversals"
+      ],
+      "done_features": [],
+      "next_hint": "FIN10, FIN13",
+      "pr_count": 0
     },
     {
       "id": "FIN10",
@@ -112,7 +235,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Core financial statements and month-end close.",
+      "features": [
+        "Profit-and-loss, balance sheet and cash-flow selectors",
+        "Bank-confirmed actual versus forecast distinctions",
+        "Period close/reopen history and consistency"
+      ],
+      "done_features": [],
+      "next_hint": "FIN11",
+      "pr_count": 0
     },
     {
       "id": "FIN11",
@@ -121,7 +255,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Company-wide and branch financial allocations.",
+      "features": [
+        "Dela Cruz, Bajada and shared overhead attribution",
+        "Inventory purchasing versus recognized COGS",
+        "Branch totals reconcile to company totals"
+      ],
+      "done_features": [],
+      "next_hint": "FIN12",
+      "pr_count": 0
     },
     {
       "id": "FIN12",
@@ -130,7 +275,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Owner and branch financial dashboard.",
+      "features": [
+        "Cash, margin, payables, runway and exception cards",
+        "Verified drilldown to supporting source evidence",
+        "Responsive mobile and desktop views"
+      ],
+      "done_features": [],
+      "next_hint": "FIN14",
+      "pr_count": 0
     },
     {
       "id": "FIN13",
@@ -139,7 +295,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Read-only integration boundaries for connected systems.",
+      "features": [
+        "Versioned contracts for Procurement, Inventory, Till, HR and Membership",
+        "Role-scoped access and idempotent intake",
+        "No cross-app direct database writes"
+      ],
+      "done_features": [],
+      "next_hint": "FIN14",
+      "pr_count": 0
     },
     {
       "id": "FIN14",
@@ -148,7 +315,18 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Cross-module acceptance and month-close rehearsal.",
+      "features": [
+        "Synthetic multi-branch transactions and bank import replay",
+        "Cross-module duplication and balance checks",
+        "Secure backup/restore and month-close acceptance"
+      ],
+      "done_features": [],
+      "next_hint": "FIN15",
+      "pr_count": 0
     },
     {
       "id": "FIN15",
@@ -157,7 +335,96 @@
       "pr_number": null,
       "status": "unverified",
       "pr_state": "unknown",
-      "deployment": "unknown"
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Owner-governed release and financial policy decisions.",
+      "features": [
+        "Resolve policy decision log and critical risks",
+        "Verify release readiness and rollback evidence",
+        "Explicit owner production approval"
+      ],
+      "done_features": [],
+      "next_hint": "Production release",
+      "pr_count": 0
+    },
+    {
+      "id": "FIN00S",
+      "title": "Production release safeguards",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Release safety and branch/deployment protections.",
+      "features": [
+        "Require PR-based merges and required checks",
+        "Prevent unapproved production deployments",
+        "Record owner approval and rollback approach"
+      ],
+      "done_features": [],
+      "next_hint": "All production PRs",
+      "pr_count": 0
+    },
+    {
+      "id": "FIN03R",
+      "title": "Economic-owner reporting adapter",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Economic-owner reporting integration.",
+      "features": [
+        "Show owner-funded business expense in correct company reports",
+        "Separate attribution from payment source",
+        "Reconcile reporting with Ledger and accounting"
+      ],
+      "done_features": [],
+      "next_hint": "FIN10",
+      "pr_count": 0
+    },
+    {
+      "id": "FIN04I",
+      "title": "Intercompany and owner-advance model",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown",
+      "ci": "unknown",
+      "review": "unknown",
+      "description": "Intercompany and owner advances design-first work.",
+      "features": [
+        "Model amounts owed between entities and owner",
+        "Require bank evidence for reimbursement",
+        "Treat cross-owner card payments and bounced cheques correctly"
+      ],
+      "done_features": [],
+      "next_hint": "FIN07, FIN09",
+      "pr_count": 0
+    }
+  ],
+  "next_up": [
+    {
+      "id": "FIN02",
+      "reason": "Complete Expense Ledger safeguards; resolves blockers for owner attribution and reconciliation."
+    },
+    {
+      "id": "FIN03",
+      "reason": "Independently validate UnionBank-style import and reconciliation evidence."
+    },
+    {
+      "id": "FIN04I",
+      "reason": "Design owner advances and intercompany settlement policy; owner sign-off before implementation."
+    },
+    {
+      "id": "FIN06",
+      "reason": "Harden reconciliation after FIN03 evidence and ownership handoff."
     }
   ]
 }
