@@ -1,0 +1,163 @@
+{
+  "connected": false,
+  "verified_at": null,
+  "note": "Read-only GitHub connection is not yet active. Statuses are conservative and must not be used as merge or deployment evidence.",
+  "assignments": [
+    {
+      "agent": "Agent 1",
+      "work": "FIN05",
+      "note": "Accounting foundation; PR not yet verified"
+    },
+    {
+      "agent": "Agent 2",
+      "work": "FIN01 / FIN02",
+      "note": "PR closeout and Ledger recovery"
+    }
+  ],
+  "packages": [
+    {
+      "id": "FIN00",
+      "title": "Repository finance audit",
+      "owner": "Agent 1",
+      "pr_number": null,
+      "status": "completed",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN01",
+      "title": "Synthetic finance test foundation",
+      "owner": "Agent 2",
+      "pr_number": 98,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN02",
+      "title": "Expense Ledger ownership and recovery",
+      "owner": "Agent 2",
+      "pr_number": 78,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN03",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN04",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN05",
+      "title": "Read-only accounting foundation",
+      "owner": "Agent 1",
+      "pr_number": null,
+      "status": "assigned",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN06",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN07",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN08",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN09",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN10",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN11",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN12",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN13",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN14",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    },
+    {
+      "id": "FIN15",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "status": "unverified",
+      "pr_state": "unknown",
+      "deployment": "unknown"
+    }
+  ]
+}
