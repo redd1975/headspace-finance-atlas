@@ -60,27 +60,48 @@ def status_for(pr):
     return "open PR — review pending"
 
 def ci_for(pr, token):
+    """Summarize GitHub Actions runs for exact PR head SHA without Checks API access.
+
+    This only establishes results for reported workflow runs; it does not certify
+    required branch protection checks or financial correctness.
+    """
     sha = pr.get("head", {}).get("sha")
     if not sha or not re.fullmatch(r"[0-9a-f]{40}", sha):
         return "unknown"
-    runs = gh("/repos/" + EXPECTED_REPO + "/commits/" + sha + "/check-runs?per_page=100", token)
-    checks = [c for c in runs.get("check_runs", []) if c.get("name") not in ("", None)]
-    if not checks:
-        return "not reported"
-    # The check-run list can include retries; prefer the latest record per check name.
+    path = ("/repos/" + EXPECTED_REPO + "/actions/runs?head_sha="
+            + sha + "&per_page=100")
+    result = gh(path, token)
+    runs = [r for r in result.get("workflow_runs", [])
+            if r.get("head_sha") == sha]
+    if not runs:
+        return "no Actions runs reported"
+    # A rerun or newer workflow attempt supersedes an earlier attempt with the
+    # same workflow ID. Never mix conclusions from different commit SHAs.
     latest = {}
-    for c in checks:
-        name = c["name"]
-        if name not in latest or c.get("started_at", "") >= latest[name].get("started_at", ""):
-            latest[name] = c
-    outcomes = [c.get("conclusion") if c.get("status") == "completed" else None for c in latest.values()]
-    if any(x in ("failure", "timed_out", "cancelled", "action_required", "startup_failure") for x in outcomes):
-        return "failed"
+    for run in runs:
+        key = run.get("workflow_id") or run.get("name")
+        if key is None:
+            continue
+        current = latest.get(key)
+        if current is None or (run.get("run_started_at") or run.get("created_at") or "",
+                               int(run.get("run_attempt") or 0),
+                               int(run.get("id") or 0)) > (
+                               current.get("run_started_at") or current.get("created_at") or "",
+                               int(current.get("run_attempt") or 0),
+                               int(current.get("id") or 0)):
+            latest[key] = run
+    outcomes = [r.get("conclusion") if r.get("status") == "completed" else None
+                for r in latest.values()]
+    if not outcomes:
+        return "no Actions runs reported"
+    if any(x in ("failure", "timed_out", "cancelled", "action_required",
+                 "startup_failure") for x in outcomes):
+        return "failed (reported Actions runs)"
     if any(x is None for x in outcomes):
-        return "running"
+        return "running (reported Actions runs)"
     if all(x == "success" for x in outcomes):
-        return "passing (reported checks)"
-    return "incomplete"
+        return "passing (reported Actions runs)"
+    return "incomplete (reported Actions runs)"
 
 def review_for(pr, token):
     reviews = pages("/repos/" + EXPECTED_REPO + "/pulls/" + str(pr["number"]) + "/reviews", token, max_pages=5)
@@ -166,7 +187,7 @@ def main():
             try:
                 rec["ci"] = ci_for(pr, token)
             except PermissionError:
-                rec["ci"] = "unavailable — token checks permission"
+                rec["ci"] = "unavailable — token Actions permission"
             try:
                 rec["review"] = review_for(pr, token)
             except PermissionError:
