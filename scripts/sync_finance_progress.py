@@ -26,8 +26,12 @@ def gh(path, token):
         "X-GitHub-Api-Version": "2022-11-28",
         "User-Agent": "headspace-public-safe-tracker",
     })
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return json.load(response)
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.load(response)
+    except urllib.error.HTTPError as exc:
+        # Only endpoint path and HTTP status, never secrets or response bodies.
+        raise PermissionError(f"GitHub API HTTP {exc.code} at {path.split('?')[0]} — verify read-only token permissions") from None
 
 def pages(endpoint, token, max_pages=10):
     items = []
