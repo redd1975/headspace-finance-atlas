@@ -143,7 +143,11 @@ def main():
             "id": fin, "title": definition["title"], "owner": definition.get("owner"),
             "pr_number": None, "pr_count": len(discovered.get(fin, [])),
             "pr_state": "unknown", "status": definition.get("manual_status") or ("issue recorded" if fin in issue_ids else "not verified"),
-            "ci": "unknown", "review": "unknown", "deployment": "unknown", "commit_updated_at": None
+            "ci": "unknown", "review": "unknown", "deployment": "unknown", "commit_updated_at": None,
+            "description": definition.get("description", ""),
+            "features": definition.get("features", []),
+            "done_features": definition.get("done_features", []),
+            "next_hint": definition.get("next_hint", "")
         }
         candidates = discovered.get(fin, [])
         if candidates:
@@ -165,6 +169,7 @@ def main():
         "verified_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "note": "Automatic PR discovery and check/review verification. No private PR text or source data published. GitHub state does not by itself prove financial correctness.",
         "assignments": cfg.get("assignments", []),
+        "next_up": cfg.get("next_up", []),
         "packages": records,
     }
     OUTPUT.write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8")
