@@ -1,0 +1,130 @@
+{
+  "source_repo": "redd1975/financial-stewardship",
+  "public_fields_policy": "Only generic work-package IDs, titles and status; no source URLs, SHA, content or comments",
+  "packages": [
+    {
+      "id": "FIN00",
+      "title": "Repository finance audit",
+      "owner": "Agent 1",
+      "pr_number": null,
+      "manual_status": "completed"
+    },
+    {
+      "id": "FIN01",
+      "title": "Synthetic finance test foundation",
+      "owner": "Agent 2",
+      "pr_number": 98,
+      "manual_status": null
+    },
+    {
+      "id": "FIN02",
+      "title": "Expense Ledger ownership and recovery",
+      "owner": "Agent 2",
+      "pr_number": 78,
+      "manual_status": null
+    },
+    {
+      "id": "FIN03",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN04",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN05",
+      "title": "Read-only accounting foundation",
+      "owner": "Agent 1",
+      "pr_number": null,
+      "manual_status": "assigned"
+    },
+    {
+      "id": "FIN06",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN07",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN08",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN09",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN10",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN11",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN12",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN13",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN14",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    },
+    {
+      "id": "FIN15",
+      "title": "Finance work package",
+      "owner": null,
+      "pr_number": null,
+      "manual_status": null
+    }
+  ],
+  "assignments": [
+    {
+      "agent": "Agent 1",
+      "work": "FIN05",
+      "note": "Accounting foundation; PR not yet verified"
+    },
+    {
+      "agent": "Agent 2",
+      "work": "FIN01 / FIN02",
+      "note": "PR closeout and Ledger recovery"
+    }
+  ]
+}
