@@ -164,12 +164,16 @@ def main():
             rec["deployment"] = deployment_for(pr, token)
             rec["commit_updated_at"] = pr.get("updated_at")
         records.append(rec)
+    progress_by_id = {r["id"]: r for r in records}
+    upcoming = [item for item in cfg.get("next_up", [])
+                if not progress_by_id.get(item["id"], {}).get("status", "").startswith("merged")
+                and progress_by_id.get(item["id"], {}).get("status") != "completed"]
     snap = {
         "connected": True,
         "verified_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "note": "Automatic PR discovery and check/review verification. No private PR text or source data published. GitHub state does not by itself prove financial correctness.",
         "assignments": cfg.get("assignments", []),
-        "next_up": cfg.get("next_up", []),
+        "next_up": upcoming,
         "packages": records,
     }
     OUTPUT.write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8")
