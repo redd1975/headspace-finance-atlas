@@ -163,9 +163,18 @@ def main():
             rec["pr_number"] = pr["number"]
             rec["pr_state"] = pr.get("state", "unknown")
             rec["status"] = status_for(pr)
-            rec["ci"] = ci_for(pr, token)
-            rec["review"] = review_for(pr, token)
-            rec["deployment"] = deployment_for(pr, token)
+            try:
+                rec["ci"] = ci_for(pr, token)
+            except PermissionError:
+                rec["ci"] = "unavailable — token checks permission"
+            try:
+                rec["review"] = review_for(pr, token)
+            except PermissionError:
+                rec["review"] = "unavailable — token review permission"
+            try:
+                rec["deployment"] = deployment_for(pr, token)
+            except PermissionError:
+                rec["deployment"] = "unknown — token deployment permission"
             rec["commit_updated_at"] = pr.get("updated_at")
         records.append(rec)
     progress_by_id = {r["id"]: r for r in records}
