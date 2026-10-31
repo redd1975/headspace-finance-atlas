@@ -41,8 +41,8 @@
       "id": "FIN05",
       "title": "Read-only accounting foundation",
       "owner": "Agent 1",
-      "pr_number": null,
-      "manual_status": "assigned"
+      "pr_number": 99,
+      "manual_status": null
     },
     {
       "id": "FIN06",
@@ -118,8 +118,8 @@
   "assignments": [
     {
       "agent": "Agent 1",
-      "work": "FIN05",
-      "note": "Accounting foundation; PR not yet verified"
+      "work": "FIN05 — PR #99",
+      "note": "Implementation complete; CI passed; independent review pending; unmerged"
     },
     {
       "agent": "Agent 2",
