@@ -44,7 +44,7 @@ def pages(endpoint, token, max_pages=10):
     return items
 
 def ids_in(title):
-    return set("FIN" + n.zfill(2) for n in FIN_RE.findall(title or ""))
+    return set("FIN" + digits.zfill(2) + suffix.upper() for digits, suffix in FIN_RE.findall(title or ""))
 
 def status_for(pr):
     if pr.get("merged_at"):
