@@ -1,3 +1,5 @@
+> **Mandatory architecture:** Read [the canonical Xpace / Headspace policy](https://github.com/redd1975/SAAS/blob/70e2d49b131f095cf8fcf01d48e84fff793d614e/architecture/README.md), [AGENTS.md](AGENTS.md) and [.architecture-policy.json](.architecture-policy.json) before changes. Owner-confirmed design is not a production-implementation claim.
+
 # Headspace Finance Execution Tracker
 
 This is a **public-safe, read-only** GitHub Pages dashboard. It does not contain or publish the full internal Finance Execution Atlas or financial records.

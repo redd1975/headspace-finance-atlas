@@ -1,0 +1,7 @@
+# Architecture review routing; required review must be configured in repository settings.
+/AGENTS.md @redd1975
+/CLAUDE.md @redd1975
+/.architecture-policy.json @redd1975
+/.github/workflows/architecture-governance.yml @redd1975
+/scripts/architecture_policy.py @redd1975
+/docs/ARCHITECTURE.md @redd1975
