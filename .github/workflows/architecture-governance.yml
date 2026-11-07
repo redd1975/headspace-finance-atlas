@@ -1,0 +1,16 @@
+name: Architecture Governance
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+permissions:
+  contents: read
+jobs:
+  architecture-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read repository governance metadata
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Validate architecture reference and PR acknowledgment
+        run: python3 scripts/architecture_policy.py

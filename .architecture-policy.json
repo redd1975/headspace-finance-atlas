@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "repository": "redd1975/headspace-finance-atlas",
+  "authority_repository": "redd1975/SAAS",
+  "canonical_revision": "70e2d49b131f095cf8fcf01d48e84fff793d614e",
+  "baseline": "1.0.0-owner-confirmed",
+  "policy_path": "architecture/v1/decisions.json",
+  "decisions_sha256": "0e83ff60f07bdce47acdf972b12aa87aeaac507fabf9dbdceb3ce138eada5642",
+  "scope": "Public development Atlas; neutral policy pointers only, no private policy publication.",
+  "implementation_status": "policy-adoption-only"
+}
