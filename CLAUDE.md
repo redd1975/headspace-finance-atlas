@@ -1,3 +1,4 @@
 # Agent instructions — no GitHub Actions preview deployments
 
 Read `AGENTS.md` and `docs/UNIVERSAL-PR-PREVIEW-STANDARD.md`. Use the Vercel Git integration and `preview/vercel-build.sh` for this synthetic public-safe Atlas pilot. No new GitHub Actions preview workflow, no production deployment, no private data. Exact SHA and live HTTP smoke are required before calling a PR preview Ready. Owner decides merge and production release.
+\nVercel-compatible frontend previews must use Vercel Git integration and Vercel build checks rather than a GitHub Actions deployment workflow. For the Atlas pilot, build via `vercel.json` and `preview/build-vercel.mjs`, which fail closed unless PR, source repository, SHA and preview environment match.\n
