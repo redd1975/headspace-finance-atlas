@@ -1,95 +1,85 @@
-# Headspace / Skipt Universal PR Preview Standard — v1 (pilot)
+# Headspace / Skipt — Universal PR Preview Standard (Vercel-first)
 
-Status: **first implementation slice in review**, not a platform-wide release.
-Authority: the canonical SAAS architecture and each repository's existing safety rules take precedence.
+**Policy status:** proposed common standard; pilot implementation exists in a draft PR. Never interpret this as production authorization or as a verified system-wide rollout. Canonical SAAS architecture and each application's guards remain authoritative.
 
-## Required contract (any deployable preview)
-
-Every PR produces a preview record with:
-
-- `previewUrl` (HTTP smoke verified), `prNumber`, exact `commitSha`
-- `status`: building, ready, failed, removed
-- `environment=preview`, `testData=synthetic`
-- `ci`: unit, typecheck/build, integration, browser smoke, migration and auth checks when applicable
-- `testAccounts`: safe credentials through a secure channel, never in public PR comments
-- `knownLimitations`, `ownerAcceptance`: pending, approved, changes requested
-
-Ready means **actual URL reachable, exact commit marker matches, startup succeeds, required checks pass, and preview is isolated**. A build success alone is not Ready. Owner approval controls merge; merge never approves a production deployment.
-
-## Standard lifecycle
+## Standard development lifecycle
 
 ```mermaid
 flowchart TD
- A[Feature branch] --> B[Open / update PR]
- B --> C[GitHub Actions checks]
- C --> D{Safe preview possible?}
- D -->|Yes| E[Isolated preview build + data]
- D -->|No| X[Blocked with exact prerequisite]
- E --> F[Deploy to preview target only]
- F --> G[HTTP, auth, mobile and workflow smoke]
- G -->|Fail| X
- G -->|Pass| H[Comment stable PR URL + SHA]
- H --> I[Owner accepts or requests changes]
- I -->|Changes| B
- I -->|Approved + checks green| J[Merge after authorization]
- J --> K[Existing production release policy]
- B -->|PR closed| Z[Remove alias + ephemeral resources]
+ A[Agent feature branch] --> B[Open / update GitHub PR]
+ B --> C[Vercel native Git integration / container provider webhook]
+ C --> D[Build and run appropriate tests on preview host]
+ D --> E[Deploy safe PR-specific preview]
+ E --> F[Smoke HTTP, auth, data boundaries, mobile and exact SHA]
+ F -->|Pass| G[PR link and Ready status]
+ F -->|Fail| X[Blocked / Failed; no owner acceptance]
+ G --> H[Owner review]
+ H -->|Changes| A
+ H -->|Approved| I[Merge by authorized owner]
+ I --> J[Separate authorized production release]
+ B -->|Close| K[Preview cleanup / retention]
 ```
 
-## Practical hosting selection
+Use **Vercel native Git PR previews by default** for compatible React/Next/Vite/static apps. GitHub still hosts the repository and pull requests, but **no GitHub Actions job is needed for preview deployment**. Vercel runs builds/checks and links deployments to commits. Vercel usage and plan limits still apply.
 
-| Application | Actual repo | Known runtime/evidence | Preview recommendation | Rollout status |
+Long-running services, WebSocket backends, databases, print queues and external workers **must not be forced into a static Vercel project**. Prefer containerized per-PR environments or hybrid Vercel frontend + isolated container backend, using already-authorized infrastructure. Do not migrate production only to obtain previews.
+
+## Required preview record
+
+- Actual `previewUrl` (stable per PR/branch where provider supports it), exact `prNumber`, `commitSha`.
+- `status`: Building / Ready / Failed / Removed, and `environment=preview`.
+- Synthetic test data only. Safe role-specific test accounts delivered securely when applicable.
+- Recorded check results (unit, typecheck, integration, browser, migrations, auth, security) according to risk and app type.
+- Known limitations and `ownerAcceptance` Pending / Approved / Changes Requested.
+- A URL is **not Ready** until it passes real network smoke and exact SHA checks.
+
+## Isolation policy
+
+1. Never connect previews to production DBs, finance vaults, payments, payroll, real Loyverse writes, live SMS/email or shipping.
+2. Use dedicated per-PR DB/schema with **independent credentials** for backend previews. Synthetic fixtures never contain real personal or financial data.
+3. Disable side-effect adapters, scheduled background workers, POS sync and external notification delivery by default.
+4. Protect private apps with Vercel deployment protection or equivalent identity gate. A synthetic static public-safe Atlas is the **only** public exception in this pilot.
+5. Never put secrets or test-account credentials in client bundles, public GitHub PRs or logs.
+6. Production release requires its normal approvals; PR creation does not authorize merge or production deployment.
+7. Ensure known recurring costs and automated cleanup/retention policy before enabling new paid resources.
+
+## App preview method and rollout status
+
+| App | Actual repository | Architecture evidence | Recommended preview | Status |
 |---|---|---|---|---|
-| Skipt Ordering and Headspace Ordering | `redd1975/headspace-ordering` | Node >=22, PostgreSQL; separate deployment modes; Skipt image built by GH Action; live Skipt host documented | **C**, per-PR isolated container + PostgreSQL for backend, protected frontend | Audit completed, implementation pending |
-| People | `redd1975/headspace-hr-` | TypeScript Node and Dockerfile | **B** isolated container + DB, mail sandbox, mock payroll outputs | Audit completed, pending |
-| Till | `redd1975/headspace-till` | Go service, Dockerfile, Loyverse guard | **B** isolated container, fake receipt and shift adapters | Audit completed, pending |
-| Membership | `redd1975/headspace-membership` | Node/TS and Dockerfile, fly/render config | **B/C** isolated service or hybrid, fake identity/payment adapters | Audit completed, pending |
-| Finance | `redd1975/financial-stewardship` | Vite, React, Dexie; real live host via guarded deployment workflow | **A** protected static synthetic app; no real vault/cloud credentials | Audit completed, pending |
-| Inventory | `redd1975/headspace-inventory` | Node app, Dockerfile | **B** isolated container | Discovery only |
-| Recipes | `redd1975/headspace-recipes` | Python and Dockerfile | **B** isolated container | Discovery only |
-| Purchasing | `redd1975/purchasing` | `main` currently contains README only | No runnable preview until deployable branch is confirmed | Blocked |
-| SAAS / Xpace core | `redd1975/SAAS` | Architecture foundation and CI | Contract/test preview, not a public product UI | Discovery only |
-| Finance Atlas (public-safe tracker) | `redd1975/headspace-finance-atlas` | Static HTML, GitHub Pages publishing on main | **A**, isolated dedicated Vercel project, synthetic PR data | **Pilot implementation in this PR** |
+| Skipt Ordering + Headspace Ordering | `redd1975/headspace-ordering` | Node 22+, PostgreSQL, separate deployments; image-build action on main | Containerized API+DB; Vercel frontend optional (hybrid) | Audited; pending |
+| People | `redd1975/headspace-hr-` | Node/TS service, Dockerfile | Isolated container+DB and synthetic payroll | Audited; pending |
+| Till | `redd1975/headspace-till` | Go + Docker; POS guard | Isolated container and fake Loyverse/Till adapters | Audited; pending |
+| Membership | `redd1975/headspace-membership` | Node/TS; Fly/Render manifests | Isolated container+DB or hybrid | Audited; pending |
+| Finance | `redd1975/financial-stewardship` | React/Vite/Dexie; guarded main deploy workflow | **Vercel Git Preview**, fake vault and cloud adapter | Audited; pending |
+| Finance Atlas | `redd1975/headspace-finance-atlas` | Static HTML; existing public GitHub Pages publishing | **Vercel native Git Preview** with synthetic fixture | Pilot draft PR, Git connection pending |
+| Inventory | `redd1975/headspace-inventory` | Node + Docker | Container/hybrid | Discovery only |
+| Recipes | `redd1975/headspace-recipes` | Python + Docker | Container | Discovery only |
+| Purchasing | `redd1975/purchasing` | `main` has README only | Determine deployable branch first | Blocked |
+| SAAS | `redd1975/SAAS` | Canonical policies, foundation | CI contract/tests, no user-facing app yet | Discovery |
 
-**A** = Vercel static/frontend. **B** = container preview. **C** = hybrid.
+Production domains were provided by Owner; Vercel linking to those production sites is not verified and must not be inferred.
 
-Known production domains are not proof of linked Vercel projects. Current Vercel team project discovery returned only the newly created demo and pilot projects; existing applications should not be migrated just to run previews.
+## First pilot: Atlas
 
-## Security requirements
+- Repository: `redd1975/headspace-finance-atlas`.
+- Draft PR: `https://github.com/redd1975/headspace-finance-atlas/pull/2`.
+- Dedicated Vercel project: `headspace-atlas-pr-preview` in team Xpace.
+- `vercel.json` calls `preview/vercel-build.sh`: checks preview environment, PR number, SHA; runs synthetic unit tests, builds isolated fixture, verifies the manifest and mobile viewport.
+- A manual API deployment of the synthetic static site returned HTTP 200 for HTML, manifest and fixture with matching PR #2 and exact commit SHA. This does not demonstrate PR-triggered auto deployment.
+- **Blocker:** Vercel account reports no GitHub Login Connection. Owner must connect GitHub in Vercel Account Settings → Git, then link/import the pilot repo to the dedicated Vercel project.
+- No GitHub Actions preview workflow is introduced. Vercel Git integration can post PR deployment status once connected.
+- **Remaining gap:** automatic PR-close cleanup not verified. Document retention, and if immediate cleanup is mandatory, add a **scoped GitHub webhook → isolated cleanup service** without GitHub Actions, or require authorized manual cleanup. The helper `preview/cleanup.py` is not automatically invoked in this pilot.
 
-1. PR deployment targets may never reference a production DB, account, hostname, or integration credential. Never read production data into sanitized preview: generate wholly synthetic fixtures.
-2. Runtime preview modes enforce feature flags **on the server**; payout, payment, Loyverse writes, staff notifications, webhook delivery, jobs and shipping adapters must use disabled or synthetic implementations.
-3. External PRs get no deployment secrets. Do not use `pull_request_target` to execute untrusted PR code with secrets.
-4. Private app previews require access control and per-PR DB/schema with isolated credentials; public preview is allowed only for explicitly public-safe Atlas content.
-5. Deployments must be bound to exact PR+SHA; enforce a stable per-PR URL and a smoke-check before commenting Ready.
-6. A PR close must remove aliases, preview deployments, test DBs and disposable credentials. Cleanup must be restricted by project/team/PR metadata; never delete unrelated resources.
-7. GitHub Actions must never reuse existing production deployment workflows or trigger production on PR open. In particular, do not enable `--prod`, merge, live migrations or production restart.
-8. Secure tokens live only in GitHub Actions Secrets/host secret manager and are not printed in workflow logs.
-9. Fail closed when credentials, data isolation or external sandbox setup cannot be verified.
-10. Existing app-specific governance, source-of-truth, privacy, design locks and branch policies remain in force.
+## After Git connection: acceptance tests
 
-## Minimal adoption procedure
+1. On a new PR commit, confirm Vercel build starts with no GitHub Actions preview job.
+2. Verify Vercel PR check/URL, exact PR number + SHA manifest, mobile layout, synthetic data, and no external side effects.
+3. Push update; confirm same PR's preview is refreshed.
+4. Close a disposable test PR; verify configured preview cleanup/retention and no production changes.
+5. Prove that fork PRs do not expose secrets, Vercel build refusal covers non-PR/production builds, and preview access restrictions work for private apps.
+6. Once verified, apply reusable pattern repository by repository without changing existing production infrastructure.
 
-1. Read repo `AGENTS.md`, `CLAUDE.md`, policy pin and deployment workflow. Document production write routes and find exactly how production deploys.
-2. Select A/B/C and define per-PR cost/resource caps and isolation boundaries.
-3. Add isolated preview build config, health endpoint, synthetic fixture and auth test roles.
-4. Add GitHub Actions `pull_request` workflow to build+test+deploy to a **dedicated preview project/service**.
-5. Protect previews, smoke-test the exact SHA and post one stable PR comment.
-6. Add a `closed` cleanup path and test it on an actual preview.
-7. Require preview check and owner acceptance through normal branch protection only after explicit policy approval.
-8. Preserve independent merge and production release approval.
+## Approval
 
-## Atlas pilot-specific boundary
-
-The public Atlas site is already a sanitized read-only status tracker. Its preview is *not* the real Finance application, and may not expose private Finance pull requests. Its new PR workflow always substitutes a fixed synthetic fixture and never pulls production data. It deploys to a separate Vercel project, leaving the GitHub Pages main-branch publishing workflow unchanged.
-
-The dedicated Vercel project was created on the existing Xpace Hobby team. The first step to full automation is a repository-scoped CI token `ATLAS_PREVIEW_VERCEL_TOKEN`. GitHub→Vercel automatic Git linking is unavailable because this Vercel account reports no GitHub Login Connection; the workflow uses the CLI instead.
-
-## Follow-on proof required
-
-- Open a PR; verify Github Actions triggered and authenticated Vercel deploy succeeded.
-- Verify URL and exact SHA; push a commit and verify unchanged alias with updated SHA.
-- Close a **throwaway** PR, verify alias 404 and no PR deployments remain.
-- Verify a fork PR cannot access deployment secrets.
-- Rehearse a failed build and missing token: no Ready comment and no production changes.
-- Owner review and merge only after passing evidence; production release remains separate.
+Developer may audit and write development branches and draft PRs. Owner approves paid infrastructure, secrets, review/merge requirements, production DNS and release actions. No automatic merging or production changes are authorized.
