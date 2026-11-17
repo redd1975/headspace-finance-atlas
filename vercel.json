@@ -1,7 +1,7 @@
 {
   "version": 2,
   "framework": null,
-  "buildCommand": "bash preview/vercel-build.sh",
+  "buildCommand": "node --test preview/tests/test-vercel.mjs && node preview/build-vercel.mjs",
   "outputDirectory": "dist/pr-preview",
   "headers": [
     {
@@ -25,5 +25,8 @@
         }
       ]
     }
-  ]
+  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "node preview/ignore-non-pr.mjs",
+  "installCommand": ""
 }
