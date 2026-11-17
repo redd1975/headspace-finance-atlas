@@ -1,38 +1,36 @@
-# Pull-request previews — first validated slice
+# Atlas preview — Vercel-native, no GitHub Actions minutes
 
-## Scope and safety
+This is a **public-safe synthetic static preview** for the Finance Atlas tracker, NOT the private Finance app. It uses a dedicated Vercel project `headspace-atlas-pr-preview` (Xpace team); it never touches the GitHub Pages main-branch publishing flow, the private Finance database, or real customers.
 
-This workflow is exclusively for the **public-safe, read-only Finance Atlas**. It is NOT a financial app preview and does not exercise transactions or use the production Finance database. It is a reusable preview-pattern pilot only.
+## Preferred workflow
 
-- Trigger: `pull_request` (opened, reopened, synchronize, closed), **same-repository PRs only**; fork PRs receive no deployment credentials or preview.
-- Source: PR-head commit, validated synthetic fixture, project-local HTML, static output.
-- Deployment: dedicated Vercel project `headspace-atlas-pr-preview` in team `xpace1`, preview target only. No `--prod`, no Git branch integration, no production DNS.
-- Preview permalink per PR: `atlas-pr-<N>-headspace-atlas-pr-preview.vercel.app` (requires Vercel to accept alias and a successful smoke test). The URL will remain consistent across PR commits.
-- Access: public by design because this Atlas is already public-safe. Never use this pattern as-is for People, Finance, Till, or private data. Those require protected auth previews and isolated backends.
-- Data: `preview/fixture.json` is **explicitly synthetic and disconnected**. No tokens or real people, transactions, customers, or API requests. CSP limits connections to self.
-- PR comment: an identified bot comment is created/updated *only after* the alias responds with matching PR+SHA manifest and synthetic fixture.
-- On close: remove the stable alias and delete eligible preview-target deployments whose metadata matches this PR in the dedicated preview project. No other project or production deployment may be touched.
-- No resource charges should be activated without Owner approval.
+`Claude pushes branch → GitHub PR → Vercel Git Integration automatically deploys PR SHA → Vercel Git status/link in PR → owner tests → new commit updates PR preview.`
 
-## One-time configuration (owner/maintainer)
+No new GitHub Actions workflow is introduced by this PR. Instead, `vercel.json` invokes `preview/vercel-build.sh` inside Vercel builds. The build fails unless `VERCEL_ENV=preview`, a real `VERCEL_GIT_PULL_REQUEST_ID` exists, and `VERCEL_GIT_COMMIT_SHA` is a 40-character hash. Unit tests, synthetic build, and exact-SHA/fixture verification run inside Vercel. No production release path exists in this script.
 
-1. Vercel team `xpace1` already contains a *dedicated* project: `headspace-atlas-pr-preview` (ID `prj_4nRhl8mkbDPCdzKQB171yQvIB80M`). Never use `order.skipt.io` or a live site as the target.
-2. Create a dedicated, restricted Vercel CI token via Vercel's token UI, scoped to the Xpace team. Limit its lifetime and access as permitted by your Vercel plan. Store it as GitHub Actions repository secret `ATLAS_PREVIEW_VERCEL_TOKEN` in `redd1975/headspace-finance-atlas`. **Never paste the token into a PR, chat, source, logs, or client bundle.**
-3. Keep `VERCEL_ORG_ID=team_HaKGbMxWDpkTL7SNcraQxOLB` and `VERCEL_PROJECT_ID=prj_4nRhl8mkbDPCdzKQB171yQvIB80M` as the allowlisted values in the workflow. Changing these requires review.
-4. Confirm team policy permits alias `atlas-pr-N-headspace-atlas-pr-preview.vercel.app`. If not, change only the alias template, keeping exact-PR uniqueness.
-5. Review and merge the PR that adds this workflow under normal review rules. CI workflows introduced in a PR may not trigger all events until present on the default branch.
+Only `preview/fixture.json` is served. The data is fictional, disconnected, and marked Preview. All live finance APIs, private PR data, emails, payments and background workers are absent.
 
-No GitHub-Vercel login connection is required **if** the repository secret is present; the workflow uses Vercel CLI with the explicitly pinned project and team.
+## One-time owner action — Vercel Git connection
 
-## Workflow steps
+The Vercel account has **no GitHub Login Connection**. Connecting the Vercel account inside ChatGPT does not connect GitHub to Vercel.
 
-`PR opened or updated → synthetic unit tests → build fixture → security checks → Vercel preview-only deploy → assign stable alias → HTTP/manifest smoke → create/update PR comment.`
+1. In Vercel, open Account Settings → Git, select **Connect GitHub** and authorize the appropriate repositories, including `redd1975/headspace-finance-atlas`. Confirm the Xpace team can import it.
+2. In Xpace → Project `headspace-atlas-pr-preview`, link/import the same GitHub repository. If this unlinked project cannot be connected in the UI, create a new **dedicated preview-only Vercel project** with the same config; do not change any production project.
+3. Configure the project Framework Preset to **Other**, Build Command `bash preview/vercel-build.sh`, Output Directory `dist/pr-preview` (repo-root working directory). These settings are also in `vercel.json`.
+4. Enable Vercel's GitHub PR checks/comments and protect access for non-public-safe apps. For this Atlas pilot the content is synthetic/public-safe; never apply the public-access exception to People, Till, Finance, Ordering or Membership.
+5. Ensure PR builds show `VERCEL_GIT_PULL_REQUEST_ID` and `VERCEL_GIT_COMMIT_SHA`; if not, **do not fabricate them**, diagnose the Git integration.
+6. Open/update this pilot PR. The Vercel Git connection—not GitHub Actions—must build and post its own preview URL.
 
-`PR closed → remove alias → delete only marked preview deployments (never production) → best-effort closure comment.`
+No GitHub repository secret `ATLAS_PREVIEW_VERCEL_TOKEN` is needed for the native Git workflow. Do not create or share a new token solely for this workflow.
 
-All deployment and clean-up steps fail closed for missing credentials. A preview is never considered Ready without a successful HTTP response and expected manifest.
+## Already verified vs. still pending
 
-## Local validation
+- **Verified:** A separate synthetic deployment was manually uploaded directly through the Vercel API, and its three HTTP routes (`/`, `/progress.json`, `/preview-manifest.json`) returned 200 with correct PR #2 and exact SHA. This proves the static content is hostable without GitHub Actions.
+- **Pending:** Automatic GitHub PR-triggered build (blocked on Vercel GitHub Login Connection), automatic same-PR update via Git, and PR-close cleanup.
+- `preview/cleanup.py` is an **optional allowlisted cleanup script**, not wired automatically while Git connection/close events are unavailable. Vercel deployment retention and PR-close cleanup must be evaluated before claiming universal preview completion.
+- This pilot cannot exercise backend/order/payroll/financial workflows and must not be represented as the real Finance application.
+
+## Local test commands
 
 ```bash
 python3 -m unittest discover -s preview/tests -v
@@ -40,12 +38,4 @@ python3 -m preview.build --pr 42 --sha aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 
 python3 -m preview.verify --root dist/pr-preview --pr 42 --sha aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
-The real PR workflow should additionally smoke its deployed alias from GitHub Actions.
-
-## Common limitations
-
-- Pilot is public-safe HTML only, with no login, database, external writes, or actual finance interactions.
-- GitHub Actions token for Vercel is not provisioned by this source-code PR.
-- Publishing static code cannot exercise full Skipt checkout, persistent Node services, People auth, Till integration, or payroll.
-- For those apps, use protected PR-specific container + database or a hybrid frontend/backend with sandboxed external adapters.
-- Deployment pruning is restricted to the dedicated project, metadata, and Preview target; Vercel may retain provider-owned build logs.
+Vercel hosting/bandwidth/build usage may count toward plan limits. Vercel Git-based builds do **not** consume GitHub Actions minutes.
