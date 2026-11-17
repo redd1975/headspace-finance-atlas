@@ -65,7 +65,7 @@ Production domains were provided by Owner; Vercel linking to those production si
 - Repository: `redd1975/headspace-finance-atlas`.
 - Draft PR: `https://github.com/redd1975/headspace-finance-atlas/pull/2`.
 - Dedicated Vercel project: `headspace-atlas-pr-preview` in team Xpace.
-- `vercel.json` calls `preview/vercel-build.sh`: checks preview environment, PR number, SHA; runs synthetic unit tests, builds isolated fixture, verifies the manifest and mobile viewport.
+- `vercel.json` calls `preview/build-vercel.mjs`: checks preview environment, PR number, SHA; runs synthetic unit tests, builds isolated fixture, verifies the manifest and mobile viewport.
 - A manual API deployment of the synthetic static site returned HTTP 200 for HTML, manifest and fixture with matching PR #2 and exact commit SHA. This does not demonstrate PR-triggered auto deployment.
 - **Blocker:** Vercel account reports no GitHub Login Connection. Owner must connect GitHub in Vercel Account Settings → Git, then link/import the pilot repo to the dedicated Vercel project.
 - No GitHub Actions preview workflow is introduced. Vercel Git integration can post PR deployment status once connected.
