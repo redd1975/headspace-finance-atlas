@@ -1,0 +1,40 @@
+{
+  "connected": false,
+  "verified_at": null,
+  "test_data": "synthetic",
+  "note": "Isolated PR preview; no private Finance data or GitHub sync",
+  "assignments": [
+    {
+      "agent": "Demo Agent",
+      "work": "Synthetic financial workflow",
+      "note": "Example preview content only"
+    }
+  ],
+  "next_up": [
+    {
+      "id": "SYN-002",
+      "reason": "Test preview visual changes"
+    }
+  ],
+  "packages": [
+    {
+      "id": "SYN01",
+      "title": "Synthetic finance example",
+      "owner": "Demo Agent",
+      "pr_number": null,
+      "status": "in preview",
+      "pr_state": "open",
+      "deployment": "preview only",
+      "ci": "pending checks",
+      "review": "owner acceptance pending",
+      "description": "This is fictional data for testing the static UI.",
+      "features": [
+        "Responsive layout",
+        "Navigation and filtering"
+      ],
+      "done_features": [],
+      "next_hint": "Review in browser",
+      "pr_count": 0
+    }
+  ]
+}
